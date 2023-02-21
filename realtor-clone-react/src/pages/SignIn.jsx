@@ -1,8 +1,11 @@
 import React from 'react'
 import { useState } from 'react';
 import {AiFillEyeInvisible , AiFillEye} from "react-icons/ai"
-import { Link } from 'react-router-dom';
+import { Link ,useNavigate} from 'react-router-dom';
 import OAuth from '../components/OAuth';
+import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { toast } from "react-toastify";
+
 
 
 
@@ -12,6 +15,7 @@ function SignIn() {
     email : "",
     password: ""
   })
+  const navigate = useNavigate();
 
   const {email,password} = formData;
 
@@ -22,6 +26,18 @@ function SignIn() {
     }));
 
   }
+  async function onSubmit(e) {
+    e.preventDefault();
+    try{
+      const auth = getAuth()
+      const userCredentials = await signInWithEmailAndPassword(auth,email,password);
+      if(userCredentials.user){
+        navigate('/')
+      }
+    }catch(error){
+      toast.error("Bad user credentials")
+    }
+  }
   return (
     <section>
       <h1 className='text-3xl text-center mt-6 font-bold'>Sign in</h1>
@@ -31,7 +47,7 @@ function SignIn() {
           src="https://images.unsplash.com/flagged/photo-1564767609342-620cb19b2357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1073&q=80" alt="key" />
         </div>
         <div className='w-full md:w-[67%] lg:w-[40%] lg:ml-20'>
-          <form  >
+          <form onSubmit={onSubmit} >
             <input placeholder='Email address'
             className='mb-6 w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300
             rounded transition ease-in-out' 
