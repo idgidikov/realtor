@@ -11,7 +11,7 @@ function Profile() {
     email: auth.currentUser.email,
   });
   const {name, email} = formData
-  console.log(auth.currentUser)
+  console.log(setFormData)
    function onLogout(){
      auth.signOut();
      navigate('/')
